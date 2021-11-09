@@ -6,6 +6,15 @@ msg_2 = "Yes ... an interesting math operation. You've slept through all classes
 msg_3 = "Yeah... division by zero. Smart move..."
 msg_4 = "Do you want to store the result? (y / n):"
 msg_5 = "Do you want to continue calculations? (y / n):"
+msg_6 = " ... lazy"
+msg_7 = " ... very lazy"
+msg_8 = " ... very, very lazy"
+msg_9 = "You are"
+msg_= {
+    10: "Are you sure? It is only one digit! (y / n)",
+    11: "Don't be silly! It's just one number! Add to the memory? (y / n)",
+    12: "Last chance! Do you really want to embarrass yourself? (y / n)",
+}
 
 memory = 0.0
 
@@ -53,6 +62,26 @@ def calculate(first_number: float, oper: str, second_number: float) -> Tuple[Uni
         return first_number * second_number, None
 
 
+def is_one_digig(number: float) -> bool:
+    return number == int(number) and -10 < number < 10
+
+
+def check(v1, v2, v3):
+    msg = ''
+    if is_one_digig(v1) and is_one_digig(v2):
+        msg += msg_6
+
+    if v1 == 1 or v2 == 1 and v3 == '*':
+        msg += msg_7
+
+    if (v1 == 0 or v2 == 0) and (v3 in '*+-'):
+        msg += msg_8
+
+    if msg:
+        msg = msg_9 + msg
+        print(msg)
+
+
 if __name__ == '__main__':
 
     while True:
@@ -64,6 +93,7 @@ if __name__ == '__main__':
             print(error)
             continue
 
+        check(first_number, secon_number, oper)
         result, error = calculate(first_number, oper, secon_number)
         if error:
             print(error)
@@ -78,7 +108,31 @@ if __name__ == '__main__':
             answer = input()
 
             if answer == 'y':
-                memory = result
+
+                if is_one_digig(result):
+
+                    msg_index = 10
+
+                    while True:
+
+                        print(msg_[msg_index])
+
+                        answer = input()
+
+                        if answer == 'y':
+                            if msg_index < 12:
+                                msg_index += 1
+                                continue
+                            else:
+                                memory = result
+                                break
+                        elif answer == 'n':
+                            break
+                        else:
+                            continue
+                else:
+                    memory = result
+
                 break
             elif answer == 'n':
                 break
