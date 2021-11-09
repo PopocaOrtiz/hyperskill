@@ -1,40 +1,62 @@
-from typing import Union
+from typing import Tuple, Union
 
 msg_0 = "Enter an equation"
 msg_1 = "Do you even know what numbers are? Stay focused!"
 msg_2 = "Yes ... an interesting math operation. You've slept through all classes, haven't you?"
+msg_3 = "Yeah... division by zero. Smart move..."
 
 
-def check_input(str_input: str) -> Union[str, None]:
+def parse_input(str_input: str) -> Tuple[Union[float, None], Union[str, None], Union[float,None], Union[str, None]]:
     """
-    returns true if str_input is a valid operation with the structure:
-    number operation number
+    check input and return the operands or an error if there is one
     """
 
     x, oper, y = str_input.split(' ')
 
     try:
         x = float(x)
-    except ValueError:
-        return msg_1
-
-    try:
         y = float(y)
     except ValueError:
-        return msg_1
+        return None, None, None, msg_1
 
-    if oper not in ['+', '-', '*', '/']:
-        return msg_2
+    if oper not in '+-*/':
+        return None, None, None, msg_2
 
-    return None
+    return x, oper, y, None
+
+
+def calculate(first_number: float, oper: str, second_number: float) -> Tuple[Union[float,None], Union[str,None]]:
+
+    if oper == '/' and second_number == 0:
+        return None, msg_3
+
+    if oper == '+':
+        return first_number + second_number, None
+
+    if oper == '-':
+        return first_number - second_number, None
+
+    if oper == '/':
+        return first_number / second_number, None
+
+    if oper == '*':
+        return first_number * second_number, None
 
 
 if __name__ == '__main__':
     while True:
         print(msg_0)
-        error = check_input( input())
+        first_number, oper, secon_number, error = parse_input( input())
         if error:
             print(error)
-        else:
-            break
+            continue
+
+        result, error = calculate(first_number, oper, secon_number)
+        if error:
+            print(error)
+            continue
+
+        print(result)
+
+        break
 
